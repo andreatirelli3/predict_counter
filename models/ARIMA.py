@@ -1,14 +1,22 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from statsmodels.tsa.arima.model import ARIMA
+from datetime import datetime
 
-# Convert the list to a Pandas DataFrame
-df = pd.DataFrame([2384, 2393, 2396, 2410, 2424], columns=['value'])
+# Define the sequence
+sequence = [2384, 2393, 2396, 2410, 2424]
 
-# Fit an ARIMA model to the data
-model = ARIMA(df, order=(1,0,0))  # p=1, d=0, q=0
+# Convert the sequence to a pandas DataFrame with a date/time index
+now = datetime.now()
+date_index = pd.date_range(start=now.strftime("%Y-%m-%d"), periods=len(sequence), freq='D')
+df = pd.DataFrame(sequence, columns=['value'], index=date_index)
+
+# Fit the ARIMA model
+model = ARIMA(df['value'], order=(1, 1, 0))
 model_fit = model.fit()
 
-# Make a prediction for the next value in the sequence
+# Predict the next value in the sequence
 next_value = model_fit.forecast()[0]
-print(f"ARIMA prediction: {next_value:.2f}")
+
+print("Next value in the sequence:", next_value)
